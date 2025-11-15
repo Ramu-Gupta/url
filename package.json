@@ -9,8 +9,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "git": "^0.1.5"
-  }
+  },
+  "description": ""
 }
