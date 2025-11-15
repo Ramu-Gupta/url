@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Url Short Website</title>
+
+    <!-- css file linke  -->
+     <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main">
+        <h2>Url Shotener </h2>
+        <form id="Form1">
+            <div>
+                <label for="urlinput">Enter Your URl</label>
+                <input type="text" name="Url" id="urlinput" required>
+            </div>
+
+            <div>
+                <label for="shortname">Enter short Name (optional) </label>
+                <input type="text" name="ShortName" id="shortname">
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="output">
+       <h3  >Links</h3>
+       <div id="links">
+         
+       </div>
+    </div>
+   
+
+
+    <script>
+
+         const showUrl=async()=>{
+
+            const response= await fetch("/api/links/Data");
+            const links =await response.json()
+
+            console.log(links)
+
+            const outputbox =document.getElementById("links");
+            outputbox.innerHTML="";
+
+            const  showInlinks=(key ,value)=>{
+                let para=document.createElement("p");
+                para.innerHTML=`
+                    <a href="${key}" target="_blank" >${window.origin}/${key}</a>
+                    <ul>${value}</ul>
+                `
+                outputbox.appendChild(para);
+            }
+
+            for(const [key,value] of Object.entries(links)){
+                showInlinks(key,value)
+            }
+
+           
+              
+
+
+            }
+        document.getElementById('Form1').addEventListener('submit', async(event)=>{
+            event.preventDefault();
+            
+            const formData= new FormData(event.target);
+            const url=formData.get('Url');
+            const shortCode =formData.get('ShortName')
+
+
+           
+
+            
+            try {
+              const respose =  await fetch("/api/data",{
+                method:"POST",
+                headers:{'Content-type':'application/json'},
+                body:JSON.stringify({url,shortCode}),
+
+              });
+              if(respose.ok){
+                showUrl()
+                alert("form sbmitted succesfully")
+                event.target.reset();
+              }else{
+                const errorMessage= await respose.text();
+                alert(errorMessage);
+              }
+
+            } catch (error) {
+                console.log(error);
+            }
+
+            // fetch('http://localhost:5000/api/data',{
+            //     method:'POST',
+            //     headers:{'Content-type':'application/json'},
+            //     body:JSON.stringify(dat)
+            // }).catch(error=>console.error('error',error));
+
+        
+            
+        })
+        showUrl()
+    </script>
+</body>
+</html>
